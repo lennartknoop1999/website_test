@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>float.cc — Gallery Refined</title>
+<style>
+  :root{
+    --bg:#000;
+    --accent:#F8E82E;
+    --gap:8px; /* tightened */
+    --side:8px; /* unified side padding */
+    --header-h:78px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+
+  /* FIXED HEADER */
+  .fixed-brand{
+    position:fixed;left:var(--side);top:18px;z-index:200;color:#fff;font-weight:700;font-size:22px;
+  }
+  .fixed-plus{
+    position:fixed;right:var(--side);top:14px;z-index:200;font-size:34px;background:none;border:0;color:#fff;cursor:pointer;
+  }
+
+  /* OVERLAY */
+  .overlay{
+    position:fixed;top:0;right:0;width:50%;height:100%;background:#fff;color:#000;transform:translateX(100%);
+    transition:transform .3s cubic-bezier(.2,.9,.3,1);z-index:220;padding:40px;overflow:auto;
+  }
+  .overlay.open{transform:translateX(0)}
+
+  /* MAIN */
+  main{padding-top:100px;width:100%;max-width:100%;margin:0 auto}
+  .projects{display:flex;flex-direction:column;gap:var(--gap);padding:0 var(--side) 80px}
+
+  /* each project */
+  .project{display:flex;gap:var(--gap);position:relative;width:100%}
+  .gallery-wrap{flex:1;position:relative;width:100%}
+
+  /* gallery */
+  .gallery{overflow:hidden;width:100%;background:#000;margin:0;padding:0}
+
+  .track{
+    display:flex;
+    gap:var(--gap);
+    transition:transform .3s cubic-bezier(.2,.9,.3,1);
+    will-change:transform;
+  }
+
+  /* image & video */
+  .item{
+    position:relative;
+    height:70vh;
+    flex:0 0 auto;
+    background:#000;
+  }
+  .item img, .item video{
+    width:100%;height:100%;object-fit:cover;display:block;border:none;outline:none;
+  }
+
+  /* caption */
+  .caption{
+    position:absolute;left:14px;bottom:14px;color:var(--accent);font-size:12px;font-weight:600;
+    text-shadow:0 1px 0 rgba(0,0,0,0.7);
+  }
+
+  /* arrows */
+  .arrow{
+    position:absolute;
+    top:50%;transform:translateY(-50%);
+    width:42px;height:42px;
+    background:rgba(0,0,0,0.55);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;border:none;
+    z-index:50;
+  }
+  .arrow svg{width:20px;height:20px;fill:#fff}
+  .arrow.left{left:0}
+  .arrow.right{right:0}
+  .arrow.hidden{opacity:0;pointer-events:none}
+
+  @media(max-width:900px){
+    .overlay{width:80%}
+    .item{height:60vh}
+  }
+  @media(max-width:600px){
+    .item{height:48vh}
+    .fixed-brand{font-size:20px}
+    .fixed-plus{font-size:30px}
+  }
+</style>
+</head>
+<body>
+
+<a class="fixed-brand" href="#top">float.cc</a>
+<button class="fixed-plus" id="menuToggle">＋</button>
+
+<aside class="overlay" id="overlay">
+  <h2>Placeholder Info</h2>
+  <p>Replace this with real content.</p>
+</aside>
+
+<main id="top">
+  <section class="projects">
+
+    <!-- PROJECT 1 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g0">
+          <div class="track">
+            <div class="item" style="width:60vw">
+              <img src="assets/images/2.2_inside_balloon_vis.jpg"><div class="caption">biowaste tower</div></div>
+            <div class="item" style="width:45vw">
+              <img src="assets:images/2.2_inside_balloon_vis.jpg"></div>
+            <div class="item" style="width:50vw">
+              <video autoplay muted loop playsinline poster="assets:videos/Video_Final_3.mp4"></video></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 2 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g1">
+          <div class="track">
+            <div class="item" style="width:50vw">
+              <img src="https://via.placeholder.com/1000x800.png?text=P2-1"><div class="caption">Project 2 — Title</div></div>
+            <div class="item" style="width:40vw">
+              <img src="https://via.placeholder.com/800x800.png?text=P2-2"></div>
+            <div class="item" style="width:55vw">
+              <img src="https://via.placeholder.com/1100x800.png?text=P2-3"></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 3 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g2">
+          <div class="track">
+            <div class="item" style="width:70vw">
+              <img src="https://via.placeholder.com/1400x800.png?text=P3-1"><div class="caption">Project 3 — Title</div></div>
+            <div class="item" style="width:48vw">
+              <video autoplay muted loop playsinline poster="https://via.placeholder.com/950x800.png?text=P3-Video"></video></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 4 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g3">
+          <div class="track">
+            <div class="item" style="width:55vw">
+              <img src="https://via.placeholder.com/1100x800.png?text=P4-1"><div class="caption">Project 4 — Title</div></div>
+            <div class="item" style="width:40vw">
+              <img src="https://via.placeholder.com/850x800.png?text=P4-2"></div>
+            <div class="item" style="width:45vw">
+              <img src="https://via.placeholder.com/900x800.png?text=P4-3"></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 5 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g4">
+          <div class="track">
+            <div class="item" style="width:50vw">
+              <img src="https://via.placeholder.com/1000x800.png?text=P5-1"><div class="caption">Project 5 — Title</div></div>
+            <div class="item" style="width:65vw">
+              <img src="https://via.placeholder.com/1300x800.png?text=P5-2"></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<script>
+/* Overlay toggle */
+const toggleBtn = document.getElementById('menuToggle');
+const overlay = document.getElementById('overlay');
+
+toggleBtn.addEventListener('click', () => {
+  overlay.classList.toggle('open');
+  toggleBtn.textContent = overlay.classList.contains('open') ? '×' : '＋';
+});
+
+/* Horizontal gallery logic */
+document.querySelectorAll('.gallery').forEach(gallery => {
+  const track = gallery.querySelector('.track');
+  const leftBtn = gallery.parentElement.querySelector('.arrow.left');
+  const rightBtn = gallery.parentElement.querySelector('.arrow.right');
+
+  let currentX = 0;
+
+  function updateArrows() {
+    const galleryW = gallery.offsetWidth;
+    const totalW = track.scrollWidth;
+
+    leftBtn.classList.toggle('hidden', currentX === 0);
+    rightBtn.classList.toggle('hidden', currentX <= -(totalW - galleryW));
+  }
+
+  function scroll(dir) {
+    const step = window.innerWidth * 0.5;
+    const galleryW = gallery.offsetWidth;
+    const totalW = track.scrollWidth;
+
+    if (dir === 'left') currentX = Math.min(0, currentX + step);
+    else currentX = Math.max(-(totalW - galleryW), currentX - step);
+
+    track.style.transform = `translateX(${currentX}px)`;
+    updateArrows();
+  }
+
+  leftBtn.addEventListener('click', () => scroll('left'));
+  rightBtn.addEventListener('click', () => scroll('right'));
+
+  updateArrows();
+});
+</script>
+</body>
+</html>

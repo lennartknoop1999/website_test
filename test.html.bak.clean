@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>float.cc — Gallery Refined</title>
+<style>
+  :root{
+    --bg:#000;
+    --accent:#F8E82E;
+    --gap:8px; /* tightened */
+    --side:8px; /* unified side padding */
+    --header-h:78px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+
+  /* FIXED HEADER */
+  .fixed-brand{
+    position:fixed;left:var(--side);top:18px;z-index:200;color:#fff;font-weight:700;font-size:22px;
+  }
+  .fixed-plus{
+    position:fixed;right:var(--side);top:14px;z-index:200;font-size:34px;background:none;border:0;color:#fff;cursor:pointer;
+  }
+
+  /* OVERLAY */
+  .overlay{
+    position:fixed;top:0;right:0;width:50%;height:100%;background:#fff;color:#000;transform:translateX(100%);
+    transition:transform .3s cubic-bezier(.2,.9,.3,1);z-index:220;padding:40px;overflow:auto;
+  }
+  .overlay.open{transform:translateX(0)}
+
+  /* MAIN */
+  main{padding-top:100px;width:100%;max-width:100%;margin:0 auto}
+  .projects{display:flex;flex-direction:column;gap:var(--gap);padding:0 var(--side) 80px}
+
+  /* each project */
+  .project{display:flex;gap:var(--gap);position:relative;width:100%}
+  .gallery-wrap{flex:1;position:relative;width:100%}
+
+  /* gallery */
+  .gallery{overflow:hidden;width:100%;background:#000;margin:0;padding:0}
+
+  .track{
+    display:flex;
+    gap:var(--gap);
+    transition:transform .3s cubic-bezier(.2,.9,.3,1);
+    will-change:transform;
+  }
+
+  /* image & video */
+  .item{
+    position:relative;
+    height:70vh;
+    flex:0 0 auto;
+    background:#000;
+  }
+  .item img, .item video{
+    width:100%;height:100%;object-fit:cover;display:block;border:none;outline:none;
+  }
+
+  /* caption */
+  .caption{
+    position:absolute;left:14px;bottom:14px;color:var(--accent);font-size:12px;font-weight:600;
+    /* removed black text shadow per user request */
+    text-shadow: none;
+  }
+
+  /* arrows */
+  /* arrow buttons: large invisible hit area, visible small black circle */
+  .arrow{
+    position:absolute;top:50%;transform:translateY(-50%);
+    /* bigger invisible hit area for easier clicking/touch */
+    width:220px;height:220px;
+    background:transparent;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;border:none;padding:0;margin:0;z-index:50;outline:none;
+  }
+
+  /* small circle — hidden by default, only appears when user moves mouse near */
+  /* background is white and uses mix-blend-mode: difference so it visually inverts the colors beneath */
+  .arrow::before{
+    content:""; display:block; width:34px;height:34px; background:#fff; border-radius:50%;
+    mix-blend-mode: difference; opacity:0; transform:scale(.8); transition:opacity .12s ease, transform .12s ease; pointer-events:none;
+  }
+
+  /* hide SVG icon completely (user wanted only the circle) */
+  .arrow svg{ display:none; }
+
+  /* shift the visible circle further to the edge for left and right arrows */
+  .arrow.left::before { transform: translateX(-44px) scale(.8); }
+  .arrow.right::before { transform: translateX(44px) scale(.8); }
+
+  /* reveal the circle when the user hovers the gallery area or the arrow button itself */
+  .gallery:hover .arrow.left::before, .arrow.left:hover::before{ opacity:1; transform: translateX(-44px) scale(1); }
+  .gallery:hover .arrow.right::before, .arrow.right:hover::before{ opacity:1; transform: translateX(44px) scale(1); }
+  .arrow.left{left:0}
+  .arrow.right{right:0}
+  .arrow.hidden{opacity:0;pointer-events:none}
+
+  @media(max-width:900px){
+    .overlay{width:80%}
+    .item{height:60vh}
+  }
+
+  /* blur effect when overlay is open - applies to main content and fixed header */
+  body.overlay-open main,
+  body.overlay-open .fixed-brand {
+    filter: blur(6px);
+    pointer-events: auto; /* allow clicking the blurred area to close */
+    transition: filter .18s ease;
+  }
+  @media(max-width:600px){
+    .item{height:48vh}
+    .fixed-brand{font-size:20px}
+    .fixed-plus{font-size:30px}
+  }
+</style>
+</head>
+<body>
+
+<a class="fixed-brand" href="#top">float.cc</a>
+<button class="fixed-plus" id="menuToggle">＋</button>
+
+<aside class="overlay" id="overlay">
+  <h2>Placeholder Info</h2>
+  <p>Replace this with real content.</p>
+</aside>
+
+<main id="top">
+  <section class="projects">
+
+    <!-- PROJECT 1 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g0">
+          <div class="track">
+            <div class="item" style="width:60vw">
+              <img src="assets/images/1.1.jpg">
+              <div class="caption">biowaste tower</div>
+            </div>
+
+            <div class="item" style="width:45vw">
+              <img src="assets/images/1.2.jpg">
+            </div>
+
+            <div class="item" style="width:50vw">
+              <video autoplay muted loop playsinline poster="assets/images/1.3-poster.png">
+                <source src="assets/videos/1.3.mp4" type="video/mp4">
+              </video>
+            </div>
+
+            <div class="item" style="width:40vw">
+              <img src="assets/images/1.4.jpg">
+            </div>
+            
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 2 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g1">
+          <div class="track">
+            <div class="item" style="width:50vw">
+              <img src="assets/images/2.1.png"><div class="caption">Project 2 — Title</div></div>
+            <div class="item" style="width:40vw">
+              <img src="assets/images/2.2.png"></div>
+            <div class="item" style="width:55vw">
+              <img src="assets/images/2.3.png"></div>
+            <div class="item" style="width:55vw">
+              <img src="assets/images/2.4.png"></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 3 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g2">
+          <div class="track">
+            <div class="item" style="width:70vw">
+              <img src="assets/images/3.1.png"><div class="caption">Project 3 — Title</div>
+            </div>
+            <div class="item" style="width:48vw">
+              <img src="assets/images/3.2.png">
+            </div>
+            <div class="item" style="width:40vw">
+              <img src="assets/images/3.3.png">
+            </div>
+            <div class="item" style="width:55vw">
+              <img src="assets/images/3.4.png">
+            </div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 4 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g3">
+          <div class="track">
+            <div class="item" style="width:55vw">
+              <img src="assets/images/4.1.png"><div class="caption">Project 4 — Title</div></div>
+            <div class="item" style="width:40vw">
+              <img src="assets/images/4.2.png"></div>
+            <div class="item" style="width:45vw">
+              <img src="assets/images/4.3.png"></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+    <!-- PROJECT 5 -->
+    <article class="project">
+      <div class="gallery-wrap">
+        <div class="gallery" data-gallery-id="g4">
+          <div class="track">
+            <div class="item" style="width:50vw">
+              <img src="assets/images/5.1.png"><div class="caption">Project 5 — Title</div></div>
+            <div class="item" style="width:65vw">
+              <img src="assets/images/5.2.png"></div>
+          </div>
+        </div>
+        <button class="arrow left hidden" data-dir="left"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+        <button class="arrow right" data-dir="right"><svg viewBox="0 0 24 24"><path d="M8.6 16.6 13.2 12 8.6 7.4 10 6l6 6-6 6z"/></svg></button>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<script>
+/* Overlay toggle */
+const toggleBtn = document.getElementById('menuToggle');
+const overlay = document.getElementById('overlay');
+
+function openOverlay(){
+  overlay.classList.add('open');
+  document.body.classList.add('overlay-open');
+  toggleBtn.textContent = '×';
+}
+
+function closeOverlay(){
+  overlay.classList.remove('open');
+  document.body.classList.remove('overlay-open');
+  toggleBtn.textContent = '＋';
+}
+
+toggleBtn.addEventListener('click', (e) => {
+  // toggle overlay
+  if (overlay.classList.contains('open')) closeOverlay();
+  else openOverlay();
+  e.stopPropagation();
+});
+
+// close overlay when user clicks outside the overlay while it is open
+document.addEventListener('click', (e) => {
+  if (!overlay.classList.contains('open')) return;
+  if (e.target.closest('#overlay')) return; // click inside overlay should not close
+  if (e.target === toggleBtn) return; // toggle button handled separately
+  closeOverlay();
+});
+
+/* Horizontal gallery logic */
+document.querySelectorAll('.gallery').forEach(gallery => {
+  const track = gallery.querySelector('.track');
+  const leftBtn = gallery.parentElement.querySelector('.arrow.left');
+  const rightBtn = gallery.parentElement.querySelector('.arrow.right');
+
+  let currentX = 0;
+
+  function updateArrows() {
+    const galleryW = gallery.offsetWidth;
+    const totalW = track.scrollWidth;
+
+    leftBtn.classList.toggle('hidden', currentX === 0);
+    rightBtn.classList.toggle('hidden', currentX <= -(totalW - galleryW));
+  }
+
+  function scroll(dir) {
+    const step = window.innerWidth * 0.5;
+    const galleryW = gallery.offsetWidth;
+    const totalW = track.scrollWidth;
+
+    if (dir === 'left') currentX = Math.min(0, currentX + step);
+    else currentX = Math.max(-(totalW - galleryW), currentX - step);
+
+    track.style.transform = `translateX(${currentX}px)`;
+    updateArrows();
+  }
+
+  leftBtn.addEventListener('click', () => scroll('left'));
+  rightBtn.addEventListener('click', () => scroll('right'));
+
+  updateArrows();
+});
+
+// Adjust each tile width so the tile matches the image/video aspect ratio
+function adjustTileWidths() {
+  const galleries = document.querySelectorAll('.gallery');
+  if (!galleries.length) return;
+
+  galleries.forEach(gallery => {
+    const items = gallery.querySelectorAll('.item');
+    items.forEach(item => {
+      const img = item.querySelector('img');
+      const vid = item.querySelector('video');
+
+      // helper to set width based on natural ratio
+      function setByRatio(nw, nh) {
+        if (!nw || !nh) return;
+        // use the computed pixel height of the item
+        const targetH = item.clientHeight || Math.round(window.innerHeight * 0.7);
+        const w = Math.max(40, Math.round((nw / nh) * targetH));
+        item.style.width = w + 'px';
+      }
+
+      if (img) {
+        if (img.naturalWidth && img.naturalHeight) setByRatio(img.naturalWidth, img.naturalHeight);
+        else img.addEventListener('load', () => setByRatio(img.naturalWidth, img.naturalHeight));
+      } else if (vid) {
+        // videos may not have videoWidth until metadata is loaded
+        if (vid.videoWidth && vid.videoHeight) setByRatio(vid.videoWidth, vid.videoHeight);
+        else {
+          // try to use poster image dimensions if available
+          const poster = vid.getAttribute('poster');
+          if (poster) {
+            const p = new Image();
+            p.onload = () => setByRatio(p.width, p.height);
+            p.src = poster;
+          }
+          // also update when metadata loads
+          vid.addEventListener('loadedmetadata', () => setByRatio(vid.videoWidth, vid.videoHeight));
+        }
+      }
+    });
+  });
+}
+
+// Run on load and when the window changes size. Will also re-run when an image loads.
+window.addEventListener('load', adjustTileWidths);
+window.addEventListener('resize', () => {
+  // small debounce to avoid thrashing
+  clearTimeout(window._tileResizeTimeout);
+  window._tileResizeTimeout = setTimeout(adjustTileWidths, 120);
+});
+
+// Also observe mutation in case new items are inserted dynamically
+const observer = new MutationObserver(() => adjustTileWidths());
+observer.observe(document.querySelector('main') || document.documentElement, { childList: true, subtree: true });
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+/* Extracted styles from test.html -- kept comments and grouping for clarity */
+:root{
+  --bg:#000;
+  --accent:#F8E82E;
+  --gap:8px; /* tightened */
+  --side:8px; /* unified side padding */
+  --header-h:78px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* FIXED HEADER */
+.fixed-brand{position:fixed;left:20px;top:18px;z-index:200;color:#fff;font-weight:800;font-size:24px}
+.fixed-plus{position:fixed;right:20px;top:12px;z-index:200;font-size:38px;background:none;border:0;color:#fff;cursor:pointer;padding:4px}
+
+/* OVERLAY */
+.overlay{position:fixed;top:0;right:0;width:50%;height:100%;background:#fff;color:#000;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.9,.3,1);z-index:220;padding:40px;overflow:auto}
+.overlay.open{transform:translateX(0)}
+
+/* MAIN */
+main{padding-top:100px;width:100%;max-width:100%;margin:0 auto}
+.projects{display:flex;flex-direction:column;gap:var(--gap);padding:0 var(--side) 80px}
+
+/* each project */
+.project{display:flex;gap:var(--gap);position:relative;width:100%}
+.gallery-wrap{flex:1;position:relative;width:100%}
+
+/* gallery */
+.gallery{overflow:hidden;width:100%;background:#000;margin:0;padding:0}
+.track{display:flex;gap:var(--gap);transition:transform .3s cubic-bezier(.2,.9,.3,1);will-change:transform}
+
+/* image & video */
+.item{position:relative;height:70vh;flex:0 0 auto;background:#000}
+.item img, .item video{width:100%;height:100%;object-fit:cover;display:block;border:none;outline:none}
+
+/* caption */
+.caption{position:absolute;left:14px;bottom:14px;color:var(--accent);font-size:12px;font-weight:600;text-shadow:none}
+
+/* arrows */
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:220px;height:220px;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;padding:0;margin:0;z-index:50;outline:none}
+.arrow::before{content:"";display:block;width:34px;height:34px;background:#fff;border-radius:50%;opacity:0;transform:scale(.8);transition:opacity .12s ease, transform .12s ease;pointer-events:none}
+.arrow svg{display:none}
+.arrow.left::before{transform:translateX(-44px) scale(.8)}
+.arrow.right::before{transform:translateX(44px) scale(.8)}
+.gallery:hover .arrow.left::before, .arrow.left:hover::before{opacity:1;transform:translateX(-44px) scale(1)}
+.gallery:hover .arrow.right::before, .arrow.right:hover::before{opacity:1;transform:translateX(44px) scale(1)}
+.arrow.left{left:0}
+.arrow.right{right:0}
+.arrow.hidden{opacity:0;pointer-events:none}
+
+/* fixed overlay arrows (fallback) - top-level elements so mix-blend-mode reliably inverts whatever is beneath */
+/* removed overlay-arrow fixed-position fallback to avoid jumping behavior */
+
+@media(max-width:900px){.overlay{width:80%}.item{height:60vh}}
+
+/* blur effect when overlay is open - applies to main content and fixed header */
+body.overlay-open main, body.overlay-open .fixed-brand{filter:blur(6px);pointer-events:auto;transition:filter .18s ease}
+
+@media(max-width:600px){.item{height:48vh}.fixed-brand{font-size:20px}.fixed-plus{font-size:30px}}
+
+/* end extracted styles */
+
+/* custom circular cursor that inverts the color underneath using mix-blend-mode */
+/* disabled on touch devices by not applying hide-default-cursor on body */
+.custom-cursor{
+  position:fixed; left:0; top:0; width:18px; height:18px; border-radius:50%;
+  background:#fff; mix-blend-mode:difference; z-index:9999; pointer-events:none;
+  transform:translate(-50%,-50%) scale(1); transition:transform .08s ease, opacity .12s ease;
+  opacity:0; will-change:transform, opacity;
+}
+
+/* hide the native cursor when class is set on body */
+body.hide-default-cursor, body.hide-default-cursor * { cursor:none !important; }
+
+/* slightly larger interactive pulse on pointer down */
+.custom-cursor.down { transform: translate(-50%,-50%) scale(.8); }
+
