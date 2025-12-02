@@ -1,3 +1,207 @@
+/* Modal behaviour for project previews
+   - Clicking an image/video opens a centered modal
+   - Background is blurred and brightened through a backdrop-filter overlay
+   - Modal content is filled from the clicked project's first caption and a png-preview (if available)
+ */
+(function(){
+  const modal = document.getElementById('project-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDesc = document.getElementById('modal-desc');
+  const closeBtn = modal.querySelector('.project-modal__close');
+
+  let lastFocused = null;
+
+  function findProject(el){
+    return el.closest('.project') || el.closest('article') || null;
+  }
+
+  function getCaption(project){
+    const cap = project.querySelector('.caption');
+    return cap ? cap.textContent.trim() : 'Projekt — Platzhalter';
+  }
+
+  function getDescription(project){
+    // If you want to add longer descriptions, attach a data-modal-desc on the article
+    return project.dataset.modalDesc || 'Hier kannst du eine längere Beschreibung, Links und Credits einfügen.';
+  }
+
+
+  function openModal(project){
+    if(!project) return;
+    modalTitle.textContent = getCaption(project);
+    modalDesc.textContent = getDescription(project);
+
+    lastFocused = document.activeElement;
+    document.body.classList.add('modal-open');
+    modal.setAttribute('aria-hidden','false');
+    // focus close button for keyboard users
+    closeBtn.focus();
+    // Attach focus trap
+    document.addEventListener('keydown', trapFocus);
+    // hide main content from screen readers while modal is visible
+    const main = document.getElementById('top');
+    if(main) main.setAttribute('aria-hidden','true');
+  }
+
+  function closeModal(){
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    if(lastFocused && lastFocused.focus) lastFocused.focus();
+    document.removeEventListener('keydown', trapFocus);
+    const main = document.getElementById('top');
+    if(main) main.removeAttribute('aria-hidden');
+  }
+
+  function trapFocus(e){
+    if(e.key !== 'Tab') return;
+    const focusable = modal.querySelectorAll('button, a[href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+    if(!focusable.length) { e.preventDefault(); return; }
+    const first = focusable[0];
+    const last = focusable[focusable.length-1];
+    if(e.shiftKey){
+      if(document.activeElement === first){ last.focus(); e.preventDefault(); }
+    } else {
+      if(document.activeElement === last){ first.focus(); e.preventDefault(); }
+    }
+  }
+
+  // close interactions
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){
+    // close if clicking the overlay outside the modal box
+    if(e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+  });
+
+  // Attach handlers only to elements explicitly marked as modal triggers.
+  // This avoids images or other elements accidentally opening the modal.
+  const triggers = document.querySelectorAll('.project .item .modal-trigger');
+  triggers.forEach(t => {
+    // keep videos focusable for keyboard users
+    t.setAttribute('tabindex','0');
+    t.addEventListener('click', function(e){
+      const project = findProject(e.currentTarget);
+      openModal(project);
+    });
+    // also support keyboard open
+    t.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const project = findProject(e.currentTarget); openModal(project); } });
+  });
+
+  // Note: modal no longer contains an image preview — modal shows only title + description
+
+})();
+/* Modal behaviour for project previews
+   - Clicking an image/video opens a centered modal
+   - Background is blurred and brightened through a backdrop-filter overlay
+   - Modal content is filled from the clicked project's first caption and a png-preview (if available)
+ */
+(function(){
+  const modal = document.getElementById('project-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDesc = document.getElementById('modal-desc');
+  const modalImage = document.getElementById('modal-image');
+  const closeBtn = modal.querySelector('.project-modal__close');
+
+  let lastFocused = null;
+
+  function findProject(el){
+    return el.closest('.project') || el.closest('article') || null;
+  }
+
+  function getCaption(project){
+    const cap = project.querySelector('.caption');
+    return cap ? cap.textContent.trim() : 'Projekt — Platzhalter';
+  }
+
+  function getDescription(project){
+    // If you want to add longer descriptions, attach a data-modal-desc on the article
+    return project.dataset.modalDesc || 'Hier kannst du eine längere Beschreibung, Links und Credits einfügen.';
+  }
+
+  function findTransparentPNG(project){
+    // Prefer explicit data-modal-img attribute, otherwise look for the first .png image inside the project
+    if(project.dataset.modalImg) return project.dataset.modalImg;
+    const imgs = Array.from(project.querySelectorAll('img'));
+    const png = imgs.find(i => i.src && i.src.toLowerCase().endsWith('.png'));
+    return png ? png.src : (imgs[0] ? imgs[0].src : null);
+  }
+
+  function openModal(project){
+    if(!project) return;
+    modalTitle.textContent = getCaption(project);
+    modalDesc.textContent = getDescription(project);
+    const imgSrc = findTransparentPNG(project);
+    if(imgSrc) {
+      modalImage.src = imgSrc;
+      modalImage.style.display = '';
+    } else {
+      modalImage.style.display = 'none';
+    }
+
+    lastFocused = document.activeElement;
+    document.body.classList.add('modal-open');
+    // hide main content from screen readers while modal is visible
+    const main = document.getElementById('top');
+    if(main) main.setAttribute('aria-hidden','true');
+    modal.setAttribute('aria-hidden','false');
+    // focus close button for keyboard users
+    closeBtn.focus();
+    // Attach focus trap
+    document.addEventListener('keydown', trapFocus);
+  }
+
+  function closeModal(){
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    if(lastFocused && lastFocused.focus) lastFocused.focus();
+    const main = document.getElementById('top');
+    if(main) main.removeAttribute('aria-hidden');
+    document.removeEventListener('keydown', trapFocus);
+  }
+
+  function trapFocus(e){
+    if(e.key !== 'Tab') return;
+    const focusable = modal.querySelectorAll('button, a[href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+    if(!focusable.length) { e.preventDefault(); return; }
+    const first = focusable[0];
+    const last = focusable[focusable.length-1];
+    if(e.shiftKey){
+      if(document.activeElement === first){ last.focus(); e.preventDefault(); }
+    } else {
+      if(document.activeElement === last){ first.focus(); e.preventDefault(); }
+    }
+  }
+
+  // close interactions
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){
+    // close if clicking the overlay outside the modal box
+    if(e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+  });
+
+  // Attach handlers to images/videos inside projects
+  const triggers = document.querySelectorAll('.project .item img, .project .item video');
+  triggers.forEach(t => {
+    t.setAttribute('tabindex','0');
+    t.addEventListener('click', function(e){
+      const project = findProject(e.currentTarget);
+      openModal(project);
+    });
+    // also support keyboard open
+    t.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const project = findProject(e.currentTarget); openModal(project); } });
+  });
+
+  // hide image if load fails (e.g. missing file)
+  modalImage.addEventListener('error', function(){
+    modalImage.style.display = 'none';
+  });
+
+})();
 /* extracted script from test.html - gallery + overlay logic */
 // Overlay toggle
 const toggleBtn = document.getElementById('menuToggle');
